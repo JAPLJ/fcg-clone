@@ -71,6 +71,16 @@ object Effect {
     override def description: String = s"リジェネ $regeneration"
   }
 
+  /** 出現時、自プレイヤーが毒状態にあるなら最大で [[amount]] だけ毒を回復する */
+  case class Cure(amount: Int) extends Effect {
+    override def onCast(state: GameState): GameState =
+      state.applyPlayer(Player1) { player =>
+        player.gainRegeneration((-player.regeneration).max(0).min(amount))
+      }
+
+    override def description: String = s"治癒 $amount"
+  }
+
   //
   // エネルギー
   //
