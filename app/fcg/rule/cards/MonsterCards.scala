@@ -34,8 +34,8 @@ object MonsterCards {
 
   // Green Monsters
   defineCard(14, Green, "きうい", 1, 3, 0, 10)
-  defineCard(15, Green, "キノコ法師", 5, 4, 0, 8, BlessPlayer(1), Draw(1))
-  defineCard(16, Green, "狩人", 9, 7, 3, 6, GainAttack(3), Draw(1))
+  defineCard(15, Green, "キノコ法師", 5, 4, 0, 8, BlessPlayer(1), GainHP(6))
+  defineCard(16, Green, "狩人", 9, 7, 3, 6, GainAttack(3), GainHP(12))
   defineCard(17, Green, "緑龍", 13, 12, 1, 16)
   defineCard(
     18,
@@ -57,7 +57,7 @@ object MonsterCards {
   // Yellow Monsters
   defineCard(19, Yellow, "れもん", 1, 3, 3, 3)
   defineCard(20, Yellow, "金インゴット", 4, 5, 5, 5, Draw(1))
-  defineCard(21, Yellow, "ロボット", 8, 7, 7, 7)
+  defineCard(21, Yellow, "ロボット", 8, 7, 7, 7, Draw(1))
   defineCard(22, Yellow, "黄龍", 13, 10, 10, 10)
 
   private def defineCard(cardId: CardId,

@@ -1,7 +1,7 @@
 package fcg.rule
 
 /** 全てのカードに共通する要素をもつ trait */
-trait Card {
+trait Card extends Ordered[Card] {
 
   /** カード ID */
   val id: CardId
@@ -17,6 +17,8 @@ trait Card {
 
   /** カードの持っている特殊効果のリスト */
   val effects: Seq[Effect]
+
+  override def compare(that: Card): CardId = this.id - that.id
 }
 
 /** モンスターカードを表す trait */

@@ -7,10 +7,10 @@ import fcg.rule.Effect._
 object SpellCards {
   // ジェネレーター
   defineCard(101, White, "ジェネレーター白", 0, GainGenerator(White, 1))
-  defineCard(102, White, "ジェネレーター赤", 0, GainGenerator(Red, 1))
-  defineCard(103, White, "ジェネレーター青", 0, GainGenerator(Blue, 1))
-  defineCard(104, White, "ジェネレーター緑", 0, GainGenerator(Green, 1))
-  defineCard(105, White, "ジェネレーター黄", 0, GainGenerator(Yellow, 1))
+  defineCard(102, Red, "ジェネレーター赤", 0, GainGenerator(Red, 1))
+  defineCard(103, Blue, "ジェネレーター青", 0, GainGenerator(Blue, 1))
+  defineCard(104, Green, "ジェネレーター緑", 0, GainGenerator(Green, 1))
+  defineCard(105, Yellow, "ジェネレーター黄", 0, GainGenerator(Yellow, 1))
   defineCard(106,
              White,
              "ジェネレーター虹",
@@ -23,10 +23,10 @@ object SpellCards {
 
   // チャージ
   defineCard(107, White, "チャージ白", 0, GainEnergy(White, 5))
-  defineCard(108, White, "チャージ赤", 0, GainEnergy(Red, 5))
-  defineCard(109, White, "チャージ青", 0, GainEnergy(Blue, 5))
-  defineCard(110, White, "チャージ緑", 0, GainEnergy(Green, 5))
-  defineCard(111, White, "チャージ黄", 0, GainEnergy(Yellow, 5))
+  defineCard(108, Red, "チャージ赤", 0, GainEnergy(Red, 5))
+  defineCard(109, Blue, "チャージ青", 0, GainEnergy(Blue, 5))
+  defineCard(110, Green, "チャージ緑", 0, GainEnergy(Green, 5))
+  defineCard(111, Yellow, "チャージ黄", 0, GainEnergy(Yellow, 5))
   defineCard(112,
              White,
              "チャージ虹",
