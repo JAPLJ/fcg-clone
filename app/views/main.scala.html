@@ -1,0 +1,49 @@
+@*
+* This template is called from the `index` template. This template
+* handles the rendering of the page header and body tags. It takes
+* two arguments, a `String` for the title of the page and an `Html`
+* object to insert into the body of the page.
+*@
+@(title: String, navName: String = "")(content: Html)
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>@title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href='@routes.Assets.versioned("bootstrap/bootstrap.min.css")' rel="stylesheet" media="screen">
+    <link href='@routes.Assets.versioned("bootstrap/bootstrap-responsive.min.css")' rel="stylesheet" media="screen">
+</head>
+<body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            </button>
+            <a class="brand" href="/">FFCG</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    @navItem(name: String, href: String, content: String) = {
+                        @if(name == navName) {
+                            <li class="active"><a href="@href">@content</a></li>
+                        } else {
+                            <li><a href="@href">@content</a></li>
+                        }
+                    }
+                    @navItem("index", "/", "Top (デッキ構築・対戦)")
+                    @navItem("rules", "/rules", "ルール・用語")
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@content
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src='@routes.Assets.versioned("js/bootstrap.min.js")'></script>
+<script> _386 = { fastLoad: true }; </script>
+</body>
+</html>
