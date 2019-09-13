@@ -31,7 +31,7 @@ object SpellCards {
              White,
              "チャージ虹",
              0,
-             GainEnergy(White, 1),
+             GainEnergy(White, 3),
              GainEnergy(Red, 1),
              GainEnergy(Blue, 1),
              GainEnergy(Green, 1),
