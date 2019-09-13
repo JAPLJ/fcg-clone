@@ -25,4 +25,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def rules() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.rules())
   }
+
+  def glossary() = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.glossary())
+  }
 }
