@@ -12,6 +12,9 @@ sealed trait Effect {
 
   /** ターン終了時に発動する効果を実装するメソッド */
   def onTurnEnd(state: GameState): GameState = state
+
+  /** この効果を持つカードに書かれる説明文を返す */
+  def description: String
 }
 
 object Effect {
@@ -20,12 +23,16 @@ object Effect {
   case class Poisoned(poison: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player1) { _.gainRegeneration(-poison) }
+
+    override def description: String = s"毒 $poison"
   }
 
   /** 出現時に自プレイヤーは [[poison]] ぶんの毒を受ける */
   case class GetPoison(poison: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainRegeneration(-poison) }
+
+    override def description: String = s"服毒 $poison"
   }
 
   /** ターン終了時に [[color]] 色のエネルギーを [[consumption]] だけ消費する */
@@ -33,60 +40,80 @@ object Effect {
       extends Effect {
     override def onTurnEnd(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainEnergy(color, -consumption) }
+
+    override def description: String = s"毎ターン${color.name}エネルギー $consumption 消費"
   }
 
   /** 出現時に [[color]] 色のエネルギーを [[consumption]] だけ消費する */
   case class ConsumeEnergy(color: Color, consumption: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainEnergy(color, -consumption) }
+
+    override def description: String = s"${color.name}エネルギー $consumption 消費"
   }
 
   /** 出現時に [[color]] 色のエネルギー増加量を [[generator]] だけ増やす */
   case class GainGenerator(color: Color, generator: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainGenerator(color, generator) }
+
+    override def description: String = s"${color.name}ジェネレーター $generator 獲得"
   }
 
   /** 出現時に [[color]] 色のエネルギーを [[amount]] だけ得る */
   case class GainEnergy(color: Color, amount: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainEnergy(color, amount) }
+
+    override def description: String = s"${color.name}エネルギー $amount 獲得"
   }
 
   /** 出現時に相手プレイヤーに [[damage]] ぶんのダメージを与える */
   case class DealDamage(damage: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player2) { _.gainHP(-damage) }
+
+    override def description: String = s"即時ダメージ $damage"
   }
 
   /** 出現時に自プレイヤーに [[damage]] ぶんのダメージを与える */
   case class DealSelfDamage(damage: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainHP(-damage) }
+
+    override def description: String = s"即時自傷ダメージ $damage"
   }
 
   /** 出現時に相手モンスターに [[damage]] ぶんのダメージを与える */
   case class DealMonsterDamage(damage: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player2) { _.gainHP(-damage) }
+
+    override def description: String = s"即時モンスターダメージ $damage"
   }
 
   /** 出現時に自モンスターに [[damage]] ぶんのダメージを与える */
   case class DealSelfMonsterDamage(damage: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player1) { _.gainHP(-damage) }
+
+    override def description: String = s"即時モンスター自傷ダメージ $damage"
   }
 
   /** ターン終了時に相手プレイヤーに [[damage]] ぶんのダメージを与える */
   case class AdditionalDamage(damage: Int) extends Effect {
     override def onTurnEnd(state: GameState): GameState =
       state.applyPlayer(Player2) { _.gainHP(-damage) }
+
+    override def description: String = s"追加ダメージ $damage"
   }
 
   /** 出現時に相手のモンスターを除去する */
   case class KillMonster() extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player2) { _.removed }
+
+    override def description: String = s"除去"
   }
 
   /** 出現時に相手モンスターの HP と同じだけ自プレイヤーが回復する */
@@ -97,6 +124,8 @@ object Effect {
           state.applyPlayer(Player1) { _.gainHP(monster.hp) }
         }
         .getOrElse(state)
+
+    override def description: String = s"HP 吸収"
   }
 
   /** 出現時に自モンスターを除去し、その HP・攻撃力・防御力を自プレイヤーが得る */
@@ -113,84 +142,112 @@ object Effect {
         }
         .getOrElse(state)
         .applyMonster(Player1) { _.removed }
+
+    override def description: String = s"生贄"
   }
 
   /** 出現時に相手プレイヤーに [[poison]] ぶんの毒を与える */
   case class DealPoisonToPlayer(poison: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player2) { _.gainRegeneration(-poison) }
+
+    override def description: String = s"毒付与 $poison"
   }
 
   /** ターン終了時に相手プレイヤーに [[poison]] ぶんの毒を与える */
   case class DealPoisonToPlayerEveryTurn(poison: Int) extends Effect {
     override def onTurnEnd(state: GameState): GameState =
       state.applyPlayer(Player2) { _.gainRegeneration(-poison) }
+
+    override def description: String = s"毎ターン毒付与 $poison"
   }
 
   /** 出現時に自プレイヤーに [[attack]] ぶんの攻撃力を与える */
   case class GainAttack(attack: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainAttack(attack) }
+
+    override def description: String = s"攻撃力UP $attack"
   }
 
   /** 出現時に相手プレイヤーに [[attack]] ぶんの攻撃力を与える */
   case class GainOpponentAttack(attack: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player2) { _.gainAttack(attack) }
+
+    override def description: String = s"敵攻撃力UP $attack"
   }
 
   /** 出現時に自プレイヤーに [[defense]] ぶんの防御力を与える */
   case class GainDefense(defense: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainDefense(defense) }
+
+    override def description: String = s"防御力UP $defense"
   }
 
   /** 出現時に相手プレイヤーに [[defense]] ぶんの防御力を与える */
   case class GainOpponentDefense(defense: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player2) { _.gainDefense(defense) }
+
+    override def description: String = s"敵防御力UP $defense"
   }
 
   /** 出現時に自モンスターに [[attack]] ぶんの攻撃力を与える */
   case class GainMonsterAttack(attack: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player1) { _.gainAttack(attack) }
+
+    override def description: String = s"モンスター攻撃力UP $attack"
   }
 
   /** 出現時に自モンスターに [[defense]] ぶんの防御力を与える */
   case class GainMonsterDefense(defense: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player1) { _.gainDefense(defense) }
+
+    override def description: String = s"モンスター防御力UP $defense"
   }
 
   /** 出現時にモンスターは [[regeneration]] ぶんのリジェネを受ける */
   case class Blessed(regeneration: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player1) { _.gainRegeneration(regeneration) }
+
+    override def description: String = s"祝福 $regeneration"
   }
 
   /** 出現時に自プレイヤーに [[regeneration]] ぶんのリジェネを与える */
   case class BlessPlayer(regeneration: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainRegeneration(regeneration) }
+
+    override def description: String = s"リジェネ $regeneration"
   }
 
   /** 出現時に自プレイヤーに [[hp]] ぶんの HP を与える */
   case class GainHP(hp: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.gainHP(hp) }
+
+    override def description: String = s"回復 $hp"
   }
 
   /** 出現時に [[amount]] 枚のカードをドローする */
   case class Draw(amount: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyPlayer(Player1) { _.drawCard(amount) }
+
+    override def description: String = s"ドロー $amount"
   }
 
   /** 出現時に相手モンスターに [[turns]] ターンの凍結を与える */
   case class Freeze(turns: Int) extends Effect {
     override def onCast(state: GameState): GameState =
       state.applyMonster(Player2) { _.freeze(turns) }
+
+    override def description: String = s"凍結 $turns"
   }
 
   /** 出現時に自モンスターの凍結状態を解除する */
@@ -199,5 +256,7 @@ object Effect {
       state.applyMonster(Player1) { monster =>
         monster.freeze(-monster.frozen)
       }
+
+    override def description: String = s"凍結解除"
   }
 }
