@@ -77,8 +77,8 @@ object SpellCards {
   defineCard(129, Green, "毒矢", 6, DealPoisonToPlayer(3))
   defineCard(130, Green, "ヒール", 6, GainHP(20))
   defineCard(131, Green, "リジェネレーション", 8, BlessPlayer(3))
-  defineCard(132, Green, "癒やしの手", 1, Cure(10))
-  defineCard(133, Green, "劇薬", 2, GainHP(30), GetPoison(10))
+  defineCard(132, Green, "癒やしの手", 1, Cure(20))
+  defineCard(133, Green, "劇薬", 2, GainHP(30), GetPoison(20))
 
   // Yellow Spells
   defineCard(134, Yellow, "処刑", 7, KillMonster(), Draw(1))
