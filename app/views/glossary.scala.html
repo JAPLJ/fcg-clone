@@ -2,6 +2,8 @@
 
 @main("FFCG Glossary", "glossary") {
 @defining(play.core.PlayVersion.current) { version =>
+<style type="text/css">dd { margin-bottom: 1em; }</style>
+
 <header class="jumbotron subhead">
     <div class="container">
         <h1>ルール・用語</h1>
@@ -15,11 +17,144 @@
     <div class="row">
         <div class="span3 bs-docs-sidebar">
             <ul class="nav nav-list bs-docs-sidenav">
+                <li><a href="#def">凡例</a></li>
+                <li><a href="#gloss-regen">毒・リジェネ関連</a></li>
+                <li><a href="#gloss-energy">エネルギー関連</a></li>
+                <li><a href="#gloss-damage">ダメージ関連</a></li>
+                <li><a href="#gloss-monster">モンスター除去・操作関連</a></li>
+                <li><a href="#gloss-status">ステータス変化関連</a></li>
+                <li><a href="#gloss-other">その他</a></li>
             </ul>
         </div>
 
         <div class="span9">
+            <section id="def">
+                <div class="page-header"><h1>1. 凡例</h1></div>
+                <p>次セクションでは次のような形式で効果説明の用語を紹介していきます。</p>
+                <dl>
+                    <dt><strong>効果</strong></dt>
+                    <dd>[発動条件] ～～～解説～～～</dd>
+                </dl>
+                <p><strong>効果</strong>: 実際にカードに効果説明として書かれている用語です。色の名前を <code>color</code>、整数値を <code>n</code> で表します。
+                </p>
+                <p><strong>[発動条件]</strong>:
+                    効果の発動条件です。<strong>出現時</strong>ならモンスターの召喚時か呪文の詠唱時に効果が発動します。<strong>ターン終了時</strong>なら、モンスターが場に召喚されている状態か、そのターンに呪文が詠唱されている場合のターン終了時に効果が発動します。
+                </p>
+            </section>
 
+            <section id="gloss-regen">
+                <div class="page-header"><h1>2. 用語解説: 毒・リジェネ関連</h1></div>
+                <dl>
+                    <dt><strong>毒 n</strong></dt>
+                    <dd>[出現時] 自モンスターに毒を n 与える。</dd>
+
+                    <dt><strong>服毒 n</strong></dt>
+                    <dd>[出現時] 自プレイヤーに毒を n 与える。</dd>
+
+                    <dt><strong>毒付与 n</strong></dt>
+                    <dd>[出現時] 相手プレイヤーに毒を n 与える。</dd>
+
+                    <dt><strong>猛毒付与 n</strong></dt>
+                    <dd>[ターン終了時] 相手プレイヤーに毒を n 与える。</dd>
+
+                    <dt><strong>祝福 n</strong></dt>
+                    <dd>[出現時] 自モンスターにリジェネを n 与える。</dd>
+
+                    <dt><strong>リジェネ n</strong></dt>
+                    <dd>[出現時] 自プレイヤーにリジェネを n 与える。</dd>
+                </dl>
+            </section>
+
+            <section id="gloss-energy">
+                <div class="page-header"><h1>3. 用語解説: エネルギー関連</h1></div>
+                <dl>
+                    <dt><strong>常時 color エネルギー消費 n</strong></dt>
+                    <dd>[ターン終了時] color 色のエネルギーを n 消費する。所持エネルギーが n に満たない場合は 0 になる。</dd>
+
+                    <dt><strong>color エネルギー消費 n</strong></dt>
+                    <dd>[出現時] color 色のエネルギーを n 消費する。所持エネルギーが n に満たない場合は 0 になる。</dd>
+
+                    <dt><strong>color ジェネレーター獲得 n</strong></dt>
+                    <dd>[出現時] color 色のジェネレーターを n 個得る。</dd>
+
+                    <dt><strong>color エネルギー獲得 n</strong></dt>
+                    <dd>[出現時] color 色のエネルギーを n 個得る。</dd>
+                </dl>
+            </section>
+
+            <section id="gloss-damage">
+                <div class="page-header"><h1>4. 用語解説: ダメージ関連</h1></div>
+                <dl>
+                    <dt><strong>即時ダメージ n</strong></dt>
+                    <dd>[出現時] 相手プレイヤーにダメージを n 与える。</dd>
+
+                    <dt><strong>即時自傷ダメージ n</strong></dt>
+                    <dd>[出現時] 自プレイヤーにダメージを n 与える。</dd>
+
+                    <dt><strong>即時モンスターダメージ n</strong></dt>
+                    <dd>[出現時] 相手モンスターにダメージを n 与える。</dd>
+
+                    <dt><strong>即時モンスター自傷ダメージ n</strong></dt>
+                    <dd>[出現時] 自モンスターにダメージを n 与える。</dd>
+
+                    <dt><strong>追加ダメージ n</strong></dt>
+                    <dd>[ターン終了時] 相手プレイヤーにダメージを n 与える。</dd>
+                </dl>
+            </section>
+
+            <section id="gloss-monster">
+                <div class="page-header"><h1>5. 用語解説: モンスター除去・操作関連</h1></div>
+                <dl>
+                    <dt><strong>除去</strong></dt>
+                    <dd>[出現時] 相手がモンスターを召喚していれば、それを破壊する。</dd>
+
+                    <dt><strong>HP 吸収</strong></dt>
+                    <dd>[出現時] 相手がモンスターを召喚していれば、その HP と同じ分だけ自プレイヤーは HP を回復する。</dd>
+
+                    <dt><strong>生贄</strong></dt>
+                    <dd>[出現時] 自分がモンスターを召喚していれば、それを破壊する。破壊されたモンスターの HP・攻撃力・防御力・リジェネ値と同じ分だけ、自プレイヤーは HP・攻撃力・防御力・リジェネ値を得る。</dd>
+
+                    <dt><strong>凍結 n</strong></dt>
+                    <dd>[出現時] 相手モンスターを n ターン凍結状態にする (すでに凍結されていれば、凍結ターンを n 延長する)。</dd>
+
+                    <dt><strong>解凍</strong></dt>
+                    <dd>[出現時] 自モンスターが凍結状態にあるならば、それを解除する。</dd>
+                </dl>
+            </section>
+
+            <section id="gloss-status">
+                <div class="page-header"><h1>6. 用語解説: ステータス変化関連</h1></div>
+                <dl>
+                    <dt><strong>攻撃力UP n</strong> / <strong>攻撃力DOWN n</strong></dt>
+                    <dd>[出現時] 自プレイヤーの攻撃力が n 増える / n 減る。</dd>
+
+                    <dt><strong>防御力UP n</strong> / <strong>防御力DOWN n</strong></dt>
+                    <dd>[出現時] 自プレイヤーの防御力が n 増える / n 減る。</dd>
+
+                    <dt><strong>敵攻撃力UP n</strong> / <strong>敵攻撃力DOWN n</strong></dt>
+                    <dd>[出現時] 相手プレイヤーの攻撃力が n 増える / n 減る。</dd>
+
+                    <dt><strong>敵防御力UP n</strong> / <strong>敵防御力DOWN n</strong></dt>
+                    <dd>[出現時] 相手プレイヤーの防御力が n 増える / n 減る。</dd>
+
+                    <dt><strong>モンスター攻撃力UP n</strong> / <strong>モンスター攻撃力DOWN n</strong></dt>
+                    <dd>[出現時] 自モンスターの攻撃力が n 増える / n 減る。</dd>
+
+                    <dt><strong>モンスター防御力UP n</strong> / <strong>モンスター防御力DOWN n</strong></dt>
+                    <dd>[出現時] 自モンスターの防御力が n 増える / n 減る。</dd>
+
+                    <dt><strong>回復 n</strong></dt>
+                    <dd>[出現時] 自プレイヤーの HP を n 回復する。</dd>
+                </dl>
+            </section>
+
+            <section id="gloss-other">
+                <div class="page-header"><h1>7. 用語解説: その他</h1></div>
+                <dl>
+                    <dt><strong>ドロー n</strong></dt>
+                    <dd>[出現時] 山札からカードを n 枚ドローする。既に手札を 7 - n 枚以上持っているときは、手札が 6 枚になるまでドローする。</dd>
+                </dl>
+            </section>
         </div>
     </div>
 </div>
