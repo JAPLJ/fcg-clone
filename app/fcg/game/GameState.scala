@@ -131,11 +131,15 @@ case class GameState private (player1: Player,
         }
 
       // 5. 呪文とモンスターのターン終了時効果を発動させる
-      (player.spellsCasted.flatMap(_.effects) ++ state.monster1
-        .map(_.baseCard.effects)
-        .getOrElse(List())).foldLeft(nextState) { (s, effect) =>
-        effect.onTurnEnd(s)
-      }
+      val monsterEffects = state.monster1
+        .map { monster =>
+          if (monster.frozen > 0) List() else monster.baseCard.effects
+        }
+        .getOrElse(List())
+      (player.spellsCasted.flatMap(_.effects) ++ monsterEffects)
+        .foldLeft(nextState) { (s, effect) =>
+          effect.onTurnEnd(s)
+        }
     }
 
   // モンスターの死亡判定を side 側で行ったあとのステートを返す
