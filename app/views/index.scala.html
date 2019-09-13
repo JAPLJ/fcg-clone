@@ -1,4 +1,4 @@
-@import fcg.rule.{Card, Color, MonsterCard, SpellCard}
+@import fcg.rule.{Card, Color, MonsterCard, SpellCard, Rule}
 
 @(monsterCards: Seq[MonsterCard], spellCards: Seq[SpellCard])
 
@@ -16,6 +16,12 @@ case Color.Yellow => "col-yellow"
 card.effects.map(_.description).mkString(" / ")
 }
 
+@sameCardLimit(card: Card) = {
+    @if(card.maxSameCards != Rule.DefaultMaxSameCards) {
+<u style="font-size: 70%">(@card.maxSameCards)</u>
+    }
+}
+
 @main("FFCG", "index") {
 @defining(play.core.PlayVersion.current) { version =>
 
@@ -25,7 +31,6 @@ card.effects.map(_.description).mkString(" / ")
     .col-blue { background-color: #99e; color: #111; }
     .col-green { background-color: #9e9; color: #111; }
     .col-yellow { background-color: #ee9; color: #111; }
-
 </style>
 
 <header class="jumbotron subhead">
@@ -72,6 +77,7 @@ card.effects.map(_.description).mkString(" / ")
 
             <section id="spell-cards">
                 <div class="page-header"><h1>2. 呪文カード</h1></div>
+                <p class="lead">名前のあとに小さく括弧書きで数値が書かれているカードは、デッキにその数値の枚数まで入れることができる。(通常は 7 枚まで)</p>
                 <table class="table table-bordered table-condensed">
                     <thead>
                     <tr class="head1">
@@ -83,7 +89,7 @@ card.effects.map(_.description).mkString(" / ")
                     <tbody>
                     @for(spell <- spellCards) {
                     <tr class="@colorClass(spell)">
-                        <td>@spell.name</td>
+                        <td>@spell.name @sameCardLimit(spell)</td>
                         <td>@spell.energyCost</td>
                         <td>@effects(spell)</td>
                     </tr>

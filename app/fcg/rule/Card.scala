@@ -9,6 +9,9 @@ trait Card extends Ordered[Card] {
   /** カード名 */
   val name: String
 
+  /** このカードをデッキに最大で何枚入れられるか */
+  val maxSameCards: Int = Rule.DefaultMaxSameCards
+
   /** カードの属性 */
   val color: Color
 

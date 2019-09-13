@@ -6,15 +6,16 @@ import fcg.rule.Effect._
 
 object SpellCards {
   // ジェネレーター
-  defineCard(101, White, "ジェネレーター白", 0, GainGenerator(White, 1))
-  defineCard(102, Red, "ジェネレーター赤", 0, GainGenerator(Red, 1))
-  defineCard(103, Blue, "ジェネレーター青", 0, GainGenerator(Blue, 1))
-  defineCard(104, Green, "ジェネレーター緑", 0, GainGenerator(Green, 1))
-  defineCard(105, Yellow, "ジェネレーター黄", 0, GainGenerator(Yellow, 1))
+  defineCard(101, White, "ジェネレーター白", 0, 20, GainGenerator(White, 1))
+  defineCard(102, Red, "ジェネレーター赤", 0, 20, GainGenerator(Red, 1))
+  defineCard(103, Blue, "ジェネレーター青", 0, 20, GainGenerator(Blue, 1))
+  defineCard(104, Green, "ジェネレーター緑", 0, 20, GainGenerator(Green, 1))
+  defineCard(105, Yellow, "ジェネレーター黄", 0, 20, GainGenerator(Yellow, 1))
   defineCard(106,
              White,
              "ジェネレーター虹",
              7,
+             20,
              GainGenerator(White, 1),
              GainGenerator(Red, 1),
              GainGenerator(Blue, 1),
@@ -22,15 +23,16 @@ object SpellCards {
              GainGenerator(Yellow, 1))
 
   // チャージ
-  defineCard(107, White, "チャージ白", 0, GainEnergy(White, 5))
-  defineCard(108, Red, "チャージ赤", 0, GainEnergy(Red, 5))
-  defineCard(109, Blue, "チャージ青", 0, GainEnergy(Blue, 5))
-  defineCard(110, Green, "チャージ緑", 0, GainEnergy(Green, 5))
-  defineCard(111, Yellow, "チャージ黄", 0, GainEnergy(Yellow, 5))
+  defineCard(107, White, "チャージ白", 0, 20, GainEnergy(White, 5))
+  defineCard(108, Red, "チャージ赤", 0, 20, GainEnergy(Red, 5))
+  defineCard(109, Blue, "チャージ青", 0, 20, GainEnergy(Blue, 5))
+  defineCard(110, Green, "チャージ緑", 0, 20, GainEnergy(Green, 5))
+  defineCard(111, Yellow, "チャージ黄", 0, 20, GainEnergy(Yellow, 5))
   defineCard(112,
              White,
              "チャージ虹",
              0,
+             20,
              GainEnergy(White, 3),
              GainEnergy(Red, 1),
              GainEnergy(Blue, 1),
@@ -84,7 +86,12 @@ object SpellCards {
   defineCard(134, Yellow, "処刑", 7, KillMonster(), Draw(1))
   defineCard(135, Yellow, "タイムワープ", 4, Draw(2))
   defineCard(136, Yellow, "大図書館", 9, Draw(Rule.MaxHandSize))
-  defineCard(137, Yellow, "インファイト", 3, GainDefense(-30), GainOpponentDefense(-30))
+  defineCard(137,
+             Yellow,
+             "インファイト",
+             3,
+             GainDefense(-30),
+             GainOpponentDefense(-30))
   defineCard(138, Yellow, "準備万端", 10, GainAttack(4), GainDefense(2), Draw(1))
 
   private def defineCard(cardId: CardId,
@@ -92,9 +99,24 @@ object SpellCards {
                          spellName: String,
                          cost: Int,
                          effectList: Effect*): Unit = {
+    defineCard(cardId,
+               col,
+               spellName,
+               cost,
+               Rule.DefaultMaxSameCards,
+               effectList: _*)
+  }
+
+  private def defineCard(cardId: CardId,
+                         col: Color,
+                         spellName: String,
+                         cost: Int,
+                         sameCardLimit: Int,
+                         effectList: Effect*): Unit = {
     CardManager.addCard(new SpellCard {
       val id: CardId = cardId
       val color: Color = col
+      override val maxSameCards: Int = sameCardLimit
       val name: String = spellName
       val energyCost: Int = cost
       val effects: Seq[Effect] = effectList.toSeq

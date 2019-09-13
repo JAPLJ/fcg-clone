@@ -16,4 +16,7 @@ object Rule {
 
   /** 全てのモンスターが確実に死ぬ最大のダメージ (除去はこの分のダメージとして扱う) */
   val MaxDamage: Int = 10000
+
+  /** デッキに入れられる同名カードの最大枚数 (デフォルト値) */
+  val DefaultMaxSameCards: Int = 7
 }
