@@ -102,14 +102,16 @@ case class GameState private (player1: Player,
           (color, player.energies(color) + player.generators(color)))
         .toMap
 
-      // 4. カードをドローする (山札がなければ毒1を受ける)
+      // 4. カードをドローする (山札がない/手札がいっぱいのとき、毒1を受ける)
       val (nextHand, nextDeck) = if (player.hand.length == Rule.MaxHandSize) {
         (player.hand, player.deck)
       } else {
         (player.hand ++ player.deck.take(1), player.deck.drop(1))
       }
       val nextRegeneration =
-        if (player.deck.isEmpty) { player.regeneration - 1 } else {
+        if (player.deck.isEmpty || player.hand.length == Rule.MaxHandSize) {
+          player.regeneration - 1
+        } else {
           player.regeneration
         }
 
