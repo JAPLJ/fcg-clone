@@ -19,4 +19,7 @@ object Rule {
 
   /** デッキに入れられる同名カードの最大枚数 (デフォルト値) */
   val DefaultMaxSameCards: Int = 7
+
+  /** エネルギーの最大保持数 */
+  val MaxEnergy: Int = 99
 }

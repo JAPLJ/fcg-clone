@@ -98,8 +98,11 @@ case class GameState private (player1: Player,
 
       // 3. エネルギーのジェネレーターによる生成を行う
       val nextEnergies = Color.Colors
-        .map(color =>
-          (color, player.energies(color) + player.generators(color)))
+        .map(
+          color =>
+            (color,
+             (player.energies(color) + player.generators(color))
+               .min(Rule.MaxEnergy)))
         .toMap
 
       // 4. カードをドローする (山札がない/手札がいっぱいのとき、毒1を受ける)

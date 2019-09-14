@@ -32,7 +32,7 @@ case class Player(override val hp: Int,
   /** color 色のエネルギーを amount だけ得たあとの状態を返す */
   def gainEnergy(color: Color, amount: Int): Player =
     this.copy(energies = energies.updatedWith(color)(ene =>
-      ene.map(e => (e + amount).max(0))))
+      ene.map(e => (e + amount).max(0).min(Rule.MaxEnergy))))
 
   /** color 色のジェネレーターを generator 個得たあとの状態を返す */
   def gainGenerator(color: Color, generator: Int): Player =
