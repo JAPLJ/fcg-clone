@@ -131,12 +131,11 @@ case class GameState private (player1: Player,
         }
 
       // 5. 呪文とモンスターのターン終了時効果を発動させる
-      val monsterEffects = state.monster1
-        .map { monster =>
-          if (monster.frozen > 0) List() else monster.baseCard.effects
-        }
-        .getOrElse(List())
-      (player.spellsCasted.flatMap(_.effects) ++ monsterEffects)
+      val monsterEffects = for {
+        monster <- state.monster1 if monster.frozen == 0
+      } yield { monster.baseCard.effects }
+      (player.spellsCasted.flatMap(_.effects) ++ monsterEffects.getOrElse(
+        Seq()))
         .foldLeft(nextState) { (s, effect) =>
           effect.onTurnEnd(s)
         }
