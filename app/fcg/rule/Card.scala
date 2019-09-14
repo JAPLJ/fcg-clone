@@ -1,7 +1,9 @@
 package fcg.rule
 
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
+
 /** 全てのカードに共通する要素をもつ trait */
-trait Card extends Ordered[Card] {
+trait Card {
 
   /** カード ID */
   val id: CardId
@@ -21,7 +23,15 @@ trait Card extends Ordered[Card] {
   /** カードの持っている特殊効果のリスト */
   val effects: Seq[Effect]
 
-  override def compare(that: Card): CardId = this.id - that.id
+  /** カード情報を JSON にエンコードする */
+  def toJson: JsObject = Json.obj(
+    "id" -> id,
+    "name" -> name,
+    "maxSameCards" -> maxSameCards,
+    "color" -> color.englishName,
+    "energyCost" -> energyCost,
+    "effectDescriptions" -> effects.map(_.description)
+  )
 }
 
 /** モンスターカードを表す trait */
@@ -30,6 +40,12 @@ trait MonsterCard extends Card {
   val hp: Int
   val attack: Int
   val defense: Int
+
+  override def toJson: JsObject = super.toJson ++ Json.obj(
+    "hp" -> hp,
+    "attack" -> attack,
+    "defense" -> defense
+  )
 }
 
 /** 呪文カードを表す trait */

@@ -1,37 +1,9 @@
 @import fcg.rule.{Card, Color, MonsterCard, SpellCard, Rule}
 
-@(monsterCards: Seq[MonsterCard], spellCards: Seq[SpellCard])
-
-@colorClass(card: Card) = @{
-card.color match {
-case Color.White => "col-white"
-case Color.Red => "col-red"
-case Color.Blue => "col-blue"
-case Color.Green => "col-green"
-case Color.Yellow => "col-yellow"
-}
-}
-
-@effects(card: Card) = @{
-card.effects.map(_.description).mkString(" / ")
-}
-
-@sameCardLimit(card: Card) = {
-    @if(card.maxSameCards != Rule.DefaultMaxSameCards) {
-<u style="font-size: 70%">(@card.maxSameCards)</u>
-    }
-}
+@(monsterCards: Seq[MonsterCard], spellCards: Seq[SpellCard])(implicit app: play.api.Application, assets: AssetsFinder)
 
 @main("FFCG", "index") {
 @defining(play.core.PlayVersion.current) { version =>
-
-<style type="text/css">
-    .col-white { background-color: #eee; color: #111; }
-    .col-red { background-color: #e99; color: #111; }
-    .col-blue { background-color: #99e; color: #111; }
-    .col-green { background-color: #9e9; color: #111; }
-    .col-yellow { background-color: #ee9; color: #111; }
-</style>
 
 <header class="jumbotron subhead">
     <div class="container">
@@ -44,62 +16,8 @@ card.effects.map(_.description).mkString(" / ")
     </div>
 </header>
 
-<div class="container">
-    <div class="row">
-        <div class="span12">
-            <section id="monster-cards">
-                <div class="page-header"><h1>1. モンスターカード</h1></div>
-                <table class="table table-bordered table-condensed">
-                    <thead>
-                    <tr class="head1">
-                        <th>名前</th>
-                        <th>コスト</th>
-                        <th>HP</th>
-                        <th>攻撃力</th>
-                        <th>防御力</th>
-                        <th class="span9">効果</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @for(monster <- monsterCards) {
-                    <tr class="@colorClass(monster)">
-                        <td>@monster.name</td>
-                        <td>@monster.energyCost</td>
-                        <td>@monster.hp</td>
-                        <td>@monster.attack</td>
-                        <td>@monster.defense</td>
-                        <td>@effects(monster)</td>
-                    </tr>
-                    }
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="spell-cards">
-                <div class="page-header"><h1>2. 呪文カード</h1></div>
-                <p class="lead">名前のあとに小さく括弧書きで数値が書かれているカードは、デッキにその数値の枚数まで入れることができる。(通常は 7 枚まで)</p>
-                <table class="table table-bordered table-condensed">
-                    <thead>
-                    <tr class="head1">
-                        <th>名前</th>
-                        <th>コスト</th>
-                        <th class="span10">効果</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @for(spell <- spellCards) {
-                    <tr class="@colorClass(spell)">
-                        <td>@spell.name @sameCardLimit(spell)</td>
-                        <td>@spell.energyCost</td>
-                        <td>@effects(spell)</td>
-                    </tr>
-                    }
-                    </tbody>
-                </table>
-            </section>
-
-        </div>
-    </div>
+<div id="top">
+    <deck_build></deck_build>
 </div>
 }
 }

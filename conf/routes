@@ -8,5 +8,9 @@ GET     /                                   controllers.HomeController.index
 GET     /rules                              controllers.HomeController.rules
 GET     /glossary                           controllers.HomeController.glossary
 
+# API
+GET     /api/monster_cards                  controllers.HomeController.monsterCards
+GET     /api/spell_cards                    controllers.HomeController.spellCards
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

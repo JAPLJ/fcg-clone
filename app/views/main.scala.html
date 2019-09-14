@@ -4,13 +4,14 @@
 * two arguments, a `String` for the title of the page and an `Html`
 * object to insert into the body of the page.
 *@
-@(title: String, navName: String = "")(content: Html)
+@(title: String, navName: String = "")(content: Html)(implicit app: play.api.Application, assets: AssetsFinder)
 
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <title>@title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='@routes.Assets.versioned("css/ffcg.css")' rel="stylesheet" media="screen">
     <!-- Bootstrap -->
     <link href='@routes.Assets.versioned("bootstrap/bootstrap.min.css")' rel="stylesheet" media="screen">
     <link href='@routes.Assets.versioned("bootstrap/bootstrap-responsive.min.css")' rel="stylesheet" media="screen">
@@ -41,8 +42,13 @@
     </div>
 </div>
 
-
 @content
+
+@if(app.mode == play.api.Mode.Prod) {
+<script src='@assets.path("js/application-all.min.js")'></script>
+} else {
+<script src='@assets.path("js/application-all.js")'></script>
+}
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src='@routes.Assets.versioned("js/bootstrap.min.js")'></script>
 <script> _386 = { fastLoad: true }; </script>
