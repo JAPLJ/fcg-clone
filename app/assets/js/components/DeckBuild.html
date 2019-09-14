@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row">
+    <div class="span12">
+      <!-- 
+        Monster Cards 
+      -->
+      <section id="monster-cards">
+        <div class="page-header">
+          <h1>モンスターカード</h1>
+        </div>
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr class="head1">
+              <th>名前</th>
+              <th>コスト</th>
+              <th>HP</th>
+              <th>攻撃力</th>
+              <th>防御力</th>
+              <th class="span9">効果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="card in monsterCards" v-bind:class="colorOf(card)">
+              <td>{{ card.name }}</td>
+              <td>{{ card.energyCost }}</td>
+              <td>{{ card.hp }}</td>
+              <td>{{ card.attack }}</td>
+              <td>{{ card.defense }}</td>
+              <td>{{ card.effectDescriptions.join(' / ') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 
+        Spell Cards 
+      -->
+      <section id="spell-cards">
+        <div class="page-header">
+          <h1>呪文カード</h1>
+        </div>
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr class="head1">
+              <th>名前</th>
+              <th>コスト</th>
+              <th class="span10">効果</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="card in spellCards" v-bind:class="colorOf(card)">
+              <td>{{ card.name }}</td>
+              <td>{{ card.energyCost }}</td>
+              <td>{{ card.effectDescriptions.join(' / ') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+</div>
