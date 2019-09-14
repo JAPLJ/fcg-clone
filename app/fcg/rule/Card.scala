@@ -30,7 +30,8 @@ trait Card {
     "maxSameCards" -> maxSameCards,
     "color" -> color.englishName,
     "energyCost" -> energyCost,
-    "effectDescriptions" -> effects.map(_.description)
+    "effectDescriptions" -> effects.map(_.description),
+    "inDeck" -> 0
   )
 }
 

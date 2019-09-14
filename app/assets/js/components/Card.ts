@@ -5,6 +5,7 @@ export interface Card {
   color: string;
   energyCost: number;
   effectDescriptions: string[];
+  inDeck: number;
 }
 
 export interface MonsterCard extends Card {

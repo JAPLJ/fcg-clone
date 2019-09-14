@@ -1,6 +1,21 @@
 <div class="container">
   <div class="row">
     <div class="span12">
+      <section id="deck-code">
+        <h3>現在のデッキ</h3>
+        <p>カード枚数: {{ numCardsInDeck }} 枚</p>
+        <p class="lead" style="word-wrap: break-word">コード: <span v-if="deckErrors.length == 0"
+            style="background-color: #000">{{ deckCode }}</code></p>
+        <ul style="color: red;">
+          <li v-for="error in deckErrors">{{ error }}</li>
+        </ul>
+
+        <h3>デッキコード読み込み</h3>
+        <input type="text" name="code_input" style="width: 50%" v-model="userInputDeckCode">
+        <button v-on:click="loadDeckCode">ロード</button>
+        <p v-if="userInputErrors.length != 0" style="color: red;">{{ userInputErrors }}</p>
+      </section>
+
       <!-- 
         Monster Cards 
       -->
@@ -11,6 +26,7 @@
         <table class="table table-bordered table-condensed">
           <thead>
             <tr class="head1">
+              <th>枚数</th>
               <th>名前</th>
               <th>コスト</th>
               <th>HP</th>
@@ -20,7 +36,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="card in monsterCards" v-bind:class="colorOf(card)">
+            <tr v-for="card in monsterCards" v-bind:class="colorOf(card)" v-bind:key="card.id">
+              <td><input style="width: 2em" type="number" v-model.number="card.inDeck" min="0"
+                  v-bind:max="card.maxSameCards" value="0">
+              </td>
               <td>{{ card.name }}</td>
               <td>{{ card.energyCost }}</td>
               <td>{{ card.hp }}</td>
@@ -39,9 +58,11 @@
         <div class="page-header">
           <h1>呪文カード</h1>
         </div>
+        <p>名前の後に括弧付きで小さく数が書かれている場合、そのカードはデッキに最大でその数ぶん入れてよい。(通常は 7 枚まで)</p>
         <table class="table table-bordered table-condensed">
           <thead>
             <tr class="head1">
+              <th>枚数</th>
               <th>名前</th>
               <th>コスト</th>
               <th class="span10">効果</th>
@@ -49,7 +70,11 @@
           </thead>
           <tbody>
             <tr v-for="card in spellCards" v-bind:class="colorOf(card)">
-              <td>{{ card.name }}</td>
+              <td><input style="width: 2em" type="number" v-model.number="card.inDeck" min="0"
+                  v-bind:max="card.maxSameCards" value="0">
+              </td>
+              <td>{{ card.name }} <span v-if="card.maxSameCards != 7"
+                  style="font-size: 80%; text-decoration: underline">({{ card.maxSameCards }})</span></td>
               <td>{{ card.energyCost }}</td>
               <td>{{ card.effectDescriptions.join(' / ') }}</td>
             </tr>
