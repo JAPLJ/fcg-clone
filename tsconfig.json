@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es2015", "es2015.iterable", "dom"],
+    "removeComments": true,
+    "strict": true,
+    "outDir": ".typescript-out",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "sourceRoot": "app/assets/js/",
+    "baseUrl": ".",
+    "paths": {
+      "vue": ["/node_modules/vue/types/index"],
+      "vue-class-component": ["/node_modules/vue-class-component/lib/index"],
+      "vue-property-decorator": ["/node_modules/vue-property-decorator/lib/vue-property-decorator"]
+    },
+    "experimentalDecorators": true
+  },
+  "files": [
+    "app/assets/js/application.ts"
+  ]
+}
