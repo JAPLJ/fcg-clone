@@ -4,7 +4,7 @@ import fcg.game.GameState.GameStatus.{Draw, InGame, Player1Wins, Player2Wins}
 import fcg.game.GameState.PlayerSide.{Player1, Player2}
 import fcg.game.GameState.{GameStatus, PlayerSide}
 import fcg.rule.{Card, Color, MonsterCard, Rule, SpellCard}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json._
 
 /** ゲームの状態を表す */
 case class GameState private (player1: Player,
@@ -213,6 +213,7 @@ case class GameState private (player1: Player,
         "name" -> p.name,
         "energies" -> p.energiesJson,
         "generators" -> p.generatorsJson,
+        "lastSpell" -> p.spellsCasted.lastOption.map(_.id),
         "deckRemain" -> p.deck.length
       ) ++ (mOption match {
         case Some(m) =>
@@ -230,7 +231,7 @@ case class GameState private (player1: Player,
     // プレイヤー 1 の情報には手札を加えて返す
     Json.obj(
       "player" -> (playerBasicInfo(player1, monster1) ++ Json.obj(
-        "hand" -> Json.arr(player1.hand.map(_.id): _*)
+        "hand" -> JsArray(player1.hand.map(h => JsNumber(h.id)))
       )),
       "opponent" -> playerBasicInfo(player2, monster2)
     )

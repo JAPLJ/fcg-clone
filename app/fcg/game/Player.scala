@@ -1,7 +1,7 @@
 package fcg.game
 
 import fcg.rule.{Card, Color, Rule, SpellCard}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json._
 
 /** プレイヤーを表す
   *
@@ -84,7 +84,8 @@ object Player {
       Vector()
     )
 
-  private def energyMapToJson(e: Map[Color, Int]): JsObject = Json.obj(
-    Color.Colors.map(color => color.englishName -> e.getOrElse(color, 0)): _*
-  )
+  private def energyMapToJson(e: Map[Color, Int]): JsObject =
+    JsObject(Color.Colors.map(color =>
+      color.englishName -> JsNumber(e.getOrElse(color, 0): Int)))
+
 }
