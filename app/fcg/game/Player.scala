@@ -18,6 +18,7 @@ case class Player(override val hp: Int,
                   override val attack: Int,
                   override val defense: Int,
                   regeneration: Int,
+                  name: String,
                   energies: Map[Color, Int],
                   generators: Map[Color, Int],
                   deck: IndexedSeq[Card],
@@ -65,12 +66,13 @@ case class Player(override val hp: Int,
 object Player {
 
   /** 指定したデッキを持ってゲームを開始した段階のプレイヤーを返す */
-  def initialState(deck: IndexedSeq[Card]): Player =
+  def initialState(name: String, deck: IndexedSeq[Card]): Player =
     Player(
       Rule.PlayerInitialHP,
       0,
       0,
       0,
+      name,
       Color.Colors.map(color => (color, 1)).toMap,
       Color.Colors.map(color => (color, 1)).toMap,
       deck.drop(Rule.InitialHandSize),

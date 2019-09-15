@@ -195,10 +195,13 @@ case class GameState private (player1: Player,
 
 object GameState {
 
-  /** 指定のデッキを持ったふたりのプレイヤーでゲームを開始し、初期状態を返す */
-  def gameStart(deck1: IndexedSeq[Card], deck2: IndexedSeq[Card]): GameState =
-    GameState(Player.initialState(deck1),
-              Player.initialState(deck2),
+  /** 指定の名前とデッキを持ったふたりのプレイヤーでゲームを開始し、初期状態を返す */
+  def gameStart(name1: String,
+                deck1: IndexedSeq[Card],
+                name2: String,
+                deck2: IndexedSeq[Card]): GameState =
+    GameState(Player.initialState(name1, deck1),
+              Player.initialState(name2, deck2),
               None,
               None)
 
