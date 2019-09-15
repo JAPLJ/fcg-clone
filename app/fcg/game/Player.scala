@@ -1,17 +1,18 @@
 package fcg.game
 
 import fcg.rule.{Card, Color, Rule, SpellCard}
+import play.api.libs.json.{JsObject, Json}
 
 /** プレイヤーを表す
   *
-  * @param hp HP
-  * @param attack 攻撃力
-  * @param defense 防御力
+  * @param hp           HP
+  * @param attack       攻撃力
+  * @param defense      防御力
   * @param regeneration リジェネ量 (負の場合は毒の量)
-  * @param energies 現在保持している色ごとのエネルギー
-  * @param generators 現在保持している色ごとのジェネレーター
-  * @param deck 現在残っている山札
-  * @param hand 手札
+  * @param energies     現在保持している色ごとのエネルギー
+  * @param generators   現在保持している色ごとのジェネレーター
+  * @param deck         現在残っている山札
+  * @param hand         手札
   * @param spellsCasted このターン使用した呪文のリスト
   */
 case class Player(override val hp: Int,
@@ -61,6 +62,9 @@ case class Player(override val hp: Int,
     val n = amount.min(deck.length).min(Rule.MaxHandSize - hand.length)
     this.copy(deck = deck.drop(n), hand = hand ++ deck.take(n))
   }
+
+  def energiesJson: JsObject = Player.energyMapToJson(energies)
+  def generatorsJson: JsObject = Player.energyMapToJson(generators)
 }
 
 object Player {
@@ -79,4 +83,8 @@ object Player {
       deck.take(Rule.InitialHandSize),
       Vector()
     )
+
+  private def energyMapToJson(e: Map[Color, Int]): JsObject = Json.obj(
+    Color.Colors.map(color => color.englishName -> e.getOrElse(color, 0)): _*
+  )
 }

@@ -4,6 +4,7 @@ import fcg.game.GameState.GameStatus.{Draw, InGame, Player1Wins, Player2Wins}
 import fcg.game.GameState.PlayerSide.{Player1, Player2}
 import fcg.game.GameState.{GameStatus, PlayerSide}
 import fcg.rule.{Card, Color, MonsterCard, Rule, SpellCard}
+import play.api.libs.json.{JsObject, Json}
 
 /** ゲームの状態を表す */
 case class GameState private (player1: Player,
@@ -42,6 +43,7 @@ case class GameState private (player1: Player,
   }
 
   /** side 側のプレイヤーが手札の cardIndex 番目のカードを使用したあとのステートを返す
+    *
     * @note 必ず当該カードが使用可能であることを precondition として要求する */
   def castCard(side: PlayerSide, cardIndex: Int): GameState = makeSwap(side) {
     state =>
@@ -136,7 +138,9 @@ case class GameState private (player1: Player,
       // 5. 呪文とモンスターのターン終了時効果を発動させる
       val monsterEffects = for {
         monster <- state.monster1 if monster.frozen == 0
-      } yield { monster.baseCard.effects }
+      } yield {
+        monster.baseCard.effects
+      }
       (player.spellsCasted.flatMap(_.effects) ++ monsterEffects.getOrElse(
         Seq()))
         .foldLeft(nextState) { (s, effect) =>
@@ -191,6 +195,46 @@ case class GameState private (player1: Player,
     makeSwap(side) { state =>
       state.copy(player1 = f(player1))
     }
+
+  /** side 側のプレイヤーから見える情報だけを集めた JSON を返す。 */
+  def toSingleSideJson(side: PlayerSide): JsObject = side match {
+    case Player1 => toPlayer1SideJson
+    case Player2 => swapSide.toPlayer1SideJson
+  }
+
+  private def toPlayer1SideJson: JsObject = {
+    // 両方のプレイヤーで互いに見える情報だけを集めた JSON を作る
+    def playerBasicInfo(p: Player, mOption: Option[Monster]): JsObject =
+      Json.obj(
+        "hp" -> p.hp,
+        "attack" -> p.attack,
+        "defense" -> p.defense,
+        "regeneration" -> p.regeneration,
+        "name" -> p.name,
+        "energies" -> p.energiesJson,
+        "generators" -> p.generatorsJson,
+        "deckRemain" -> p.deck.length
+      ) ++ (mOption match {
+        case Some(m) =>
+          Json.obj(
+            "monster" -> Json.obj(
+              "hp" -> m.hp,
+              "attack" -> m.attack,
+              "defense" -> m.defense,
+              "regeneration" -> m.regeneration,
+              "baseCardId" -> m.baseCard.id
+            ))
+        case None => Json.obj()
+      })
+
+    // プレイヤー 1 の情報には手札を加えて返す
+    Json.obj(
+      "player" -> (playerBasicInfo(player1, monster1) ++ Json.obj(
+        "hand" -> Json.arr(player1.hand.map(_.id): _*)
+      )),
+      "opponent" -> playerBasicInfo(player2, monster2)
+    )
+  }
 }
 
 object GameState {
