@@ -1,5 +1,6 @@
 package fcg.game
 
+import arena.ClientMonster
 import fcg.rule.{MonsterCard, Rule}
 
 /** モンスターを表す
@@ -46,6 +47,10 @@ case class Monster(override val hp: Int,
   /** turns ターンの凍結を受ける */
   def freeze(turns: Int): Monster =
     this.copy(frozen = frozen + turns)
+
+  /** ユーザ側から見える情報だけを集めた [[ClientMonster]] を返す */
+  def toClientMonster: ClientMonster =
+    ClientMonster(hp, attack, defense, regeneration, frozen, baseCard.id)
 }
 
 object Monster {

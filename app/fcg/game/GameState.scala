@@ -1,10 +1,10 @@
 package fcg.game
 
+import arena.ClientGameState
 import fcg.game.GameState.GameStatus.{Draw, InGame, Player1Wins, Player2Wins}
 import fcg.game.GameState.PlayerSide.{Player1, Player2}
 import fcg.game.GameState.{GameStatus, PlayerSide}
 import fcg.rule.{Card, Color, MonsterCard, Rule, SpellCard}
-import play.api.libs.json._
 
 /** ゲームの状態を表す */
 case class GameState private (player1: Player,
@@ -196,46 +196,16 @@ case class GameState private (player1: Player,
       state.copy(player1 = f(player1))
     }
 
-  /** side 側のプレイヤーから見える情報だけを集めた JSON を返す。 */
-  def toSingleSideJson(side: PlayerSide): JsObject = side match {
-    case Player1 => toPlayer1SideJson
-    case Player2 => swapSide.toPlayer1SideJson
+  /** side 側のプレイヤーから見える情報だけを集めた [[ClientGameState]] を返す */
+  def toClientGameState(side: PlayerSide): ClientGameState = side match {
+    case Player1 => toPlayer1SideGameState
+    case Player2 => swapSide.toPlayer1SideGameState
   }
 
-  private def toPlayer1SideJson: JsObject = {
-    // 両方のプレイヤーで互いに見える情報だけを集めた JSON を作る
-    def playerBasicInfo(p: Player, mOption: Option[Monster]): JsObject =
-      Json.obj(
-        "hp" -> p.hp,
-        "attack" -> p.attack,
-        "defense" -> p.defense,
-        "regeneration" -> p.regeneration,
-        "name" -> p.name,
-        "energies" -> p.energiesJson,
-        "generators" -> p.generatorsJson,
-        "lastSpell" -> p.spellsCasted.lastOption.map(_.id),
-        "deckRemain" -> p.deck.length
-      ) ++ (mOption match {
-        case Some(m) =>
-          Json.obj(
-            "monster" -> Json.obj(
-              "hp" -> m.hp,
-              "attack" -> m.attack,
-              "defense" -> m.defense,
-              "regeneration" -> m.regeneration,
-              "baseCardId" -> m.baseCard.id
-            ))
-        case None => Json.obj()
-      })
-
-    // プレイヤー 1 の情報には手札を加えて返す
-    Json.obj(
-      "player" -> (playerBasicInfo(player1, monster1) ++ Json.obj(
-        "hand" -> JsArray(player1.hand.map(h => JsNumber(h.id)))
-      )),
-      "opponent" -> playerBasicInfo(player2, monster2)
-    )
-  }
+  private def toPlayer1SideGameState: ClientGameState =
+    ClientGameState(player1.toClientPlayer(monster1),
+                    player2.toClientPlayer(monster2),
+                    player1.hand.map(_.id))
 }
 
 object GameState {

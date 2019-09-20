@@ -1,5 +1,6 @@
 package fcg.game
 
+import arena.ClientPlayer
 import fcg.rule.{Card, Color, Rule, SpellCard}
 import play.api.libs.json._
 
@@ -63,8 +64,18 @@ case class Player(override val hp: Int,
     this.copy(deck = deck.drop(n), hand = hand ++ deck.take(n))
   }
 
-  def energiesJson: JsObject = Player.energyMapToJson(energies)
-  def generatorsJson: JsObject = Player.energyMapToJson(generators)
+  /** ユーザ側から見える情報だけを集めた [[ClientPlayer]] を返す */
+  def toClientPlayer(monster: Option[Monster]): ClientPlayer =
+    ClientPlayer(hp,
+                 attack,
+                 defense,
+                 regeneration,
+                 name,
+                 energies,
+                 generators,
+                 monster.map(_.toClientMonster),
+                 spellsCasted.lastOption.map(_.id),
+                 deck.length)
 }
 
 object Player {
