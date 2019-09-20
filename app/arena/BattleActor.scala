@@ -1,0 +1,5 @@
+package arena
+
+class BattleActor {
+
+}
