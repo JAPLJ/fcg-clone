@@ -3,3 +3,8 @@
 .col-blue { background-color: #99e; color: #111; }
 .col-green { background-color: #9e9; color: #111; }
 .col-yellow { background-color: #ee9; color: #111; }
+
+.table-cardlist { font-size: 90%; }
+.table-cardlist input[type="number"] {
+  margin: 0;
+}
