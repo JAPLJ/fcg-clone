@@ -37,7 +37,8 @@ class ArenaService @Inject()(
       case None =>
         val arena = createArena()
         arenaMap.update(arena.arenaId, arena)
-        battleManagerMap.update(arena.arenaId, new BattleManager(arena))
+        battleManagerMap.update(arena.arenaId,
+                                new BattleManager(arena, materializer, system))
         waitingArenaId = Some(arena.arenaId)
         (userKey, arena)
     }
