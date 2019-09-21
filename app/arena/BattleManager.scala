@@ -153,5 +153,17 @@ class BattleManager(arena: Arena,
     }
   }
 
-  def turnEnd(userKey: String): Unit = ???
+  /** ターン終了時の処理を行う */
+  def turnEnd(userKey: String): Unit = synchronized {
+    if (userKey == systemUserKey && battleState.nonEmpty) {
+      val currentTime = System.currentTimeMillis()
+      updateBattleState(st =>
+        st.copy(
+          gameState = st.gameState.turnEnd(),
+          currentTurn = st.currentTurn + 1,
+          nextTurnStartTime = currentTime + Rule.InitialTurnDuration.toMillis))
+      system.scheduler.scheduleOnce(Rule.InitialTurnDuration,
+                                    () => checkTurnEnd())
+    }
+  }
 }
