@@ -1,7 +1,6 @@
 package arena
 
 import java.util.UUID
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.ActorSystem
@@ -9,11 +8,12 @@ import akka.stream.{Materializer, OverflowStrategy}
 import akka.stream.scaladsl.{Keep, Sink, Source}
 import arena.ClientInput.{GameStart, Join, TurnEnd}
 import fcg.game.GameState
-import fcg.rule.{CardId, Rule}
+import fcg.game.GameState.PlayerSide
+import fcg.game.GameState.PlayerSide.{Player1, Player2}
+import fcg.rule.{CardId, MilliSec, Rule}
 import fcg.rule.cards.CardManager
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.Duration
 
 /** バトル管理を行うクラス
   * 1 回の対戦につき (1 アリーナごとに) 1 個作られる */
@@ -57,6 +57,17 @@ class BattleManager(arena: Arena,
     }
   }
 
+  private def checkCardUseWait(side: PlayerSide,
+                               currentTime: MilliSec): Boolean =
+    (for { state <- battleState } yield {
+      side match {
+        case Player1 =>
+          currentTime >= state.player1LastCast + Rule.CardUseWait.toMillis
+        case Player2 =>
+          currentTime >= state.player2LastCast + Rule.CardUseWait.toMillis
+      }
+    }).getOrElse(false)
+
   /** バトルにプレイヤーを参加させる (2人揃ったら [[BattleState]] を初期化する) */
   def join(userKey: String, userName: String, deck: IndexedSeq[CardId]): Unit =
     synchronized {
@@ -90,18 +101,42 @@ class BattleManager(arena: Arena,
   /** 2人揃って所定の時間が経ったときにゲームを開始させる */
   def gameStart(userKey: String): Unit = synchronized {
     if (userKey == systemUserKey && battleState.nonEmpty) {
-      updateBattleState(state => {
-        require(state.currentTurn == 0)
-        state.copy(currentTurn = 1,
-                   nextTurnStartTime = System
-                     .currentTimeMillis() + Rule.InitialTurnDuration.toMillis)
+      updateBattleState(st => {
+        require(st.currentTurn == 0)
+        st.copy(currentTurn = 1,
+                nextTurnStartTime = System
+                  .currentTimeMillis() + Rule.InitialTurnDuration.toMillis)
       })
       system.scheduler.scheduleOnce(Rule.InitialTurnDuration,
                                     () => checkTurnEnd())
     }
   }
 
-  def useCard(userKey: String, cardIndex: Int): Unit = ???
+  /** カードを使用する */
+  def useCard(userKey: String, cardIndex: Int): Unit = {
+    val currentTime = System.currentTimeMillis()
+    for {
+      state <- battleState
+      playerSide <- userKey match {
+        case state.player1Key => Some(Player1)
+        case state.player2Key => Some(Player2)
+        case _                => None
+      }
+      if checkCardUseWait(playerSide, currentTime)
+      if state.gameState.canCast(playerSide, cardIndex)
+    } {
+      val (lastUsed1, lastUsed2): (MilliSec, MilliSec) = playerSide match {
+        case Player1 => (currentTime, lastUsed2)
+        case Player2 => (lastUsed1, currentTime)
+      }
+      updateBattleState(
+        st =>
+          st.copy(gameState = st.gameState.castCard(playerSide, cardIndex),
+                  player1LastCast = lastUsed1,
+                  player2LastCast = lastUsed2))
+    }
+  }
+
   def destroyMonster(userKey: String): Unit = ???
   def turnEnd(userKey: String): Unit = ???
 }
