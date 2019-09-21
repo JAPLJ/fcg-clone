@@ -80,6 +80,10 @@ case class GameState private (player1: Player,
         .removeKilledMonster(Player2)
   }
 
+  /** side 側のモンスターを除去したあとのステートを返す */
+  def destroyMonster(side: PlayerSide): GameState =
+    applyMonster(side) { _.removed }.removeKilledMonster(side)
+
   // ターン終了時の処理のうち、最初に処理すべきものを side 側についてのみ行ったあとのステートを返す
   private def preTurnEndSingleSide(side: PlayerSide): GameState =
     makeSwap(side) { state =>

@@ -112,9 +112,8 @@ class BattleManager(arena: Arena,
     }
   }
 
-  /** カードを使用する */
-  def useCard(userKey: String, cardIndex: Int): Unit = {
-    val currentTime = System.currentTimeMillis()
+  private def validateUserKey(
+      userKey: String): Option[(BattleState, PlayerSide)] =
     for {
       state <- battleState
       playerSide <- userKey match {
@@ -122,6 +121,13 @@ class BattleManager(arena: Arena,
         case state.player2Key => Some(Player2)
         case _                => None
       }
+    } yield { (state, playerSide) }
+
+  /** カードを使用する */
+  def useCard(userKey: String, cardIndex: Int): Unit = synchronized {
+    val currentTime = System.currentTimeMillis()
+    for {
+      (state, playerSide) <- validateUserKey(userKey)
       if checkCardUseWait(playerSide, currentTime)
       if state.gameState.canCast(playerSide, cardIndex)
     } {
@@ -137,6 +143,15 @@ class BattleManager(arena: Arena,
     }
   }
 
-  def destroyMonster(userKey: String): Unit = ???
+  /** 自分のモンスターを破壊する */
+  def destroyMonster(userKey: String): Unit = synchronized {
+    for {
+      (_, playerSide) <- validateUserKey(userKey)
+    } {
+      updateBattleState(
+        st => st.copy(gameState = st.gameState.destroyMonster(playerSide)))
+    }
+  }
+
   def turnEnd(userKey: String): Unit = ???
 }
