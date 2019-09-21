@@ -2,7 +2,7 @@ package fcg.rule
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, FiniteDuration}
 
 object Rule {
 
@@ -28,11 +28,11 @@ object Rule {
   val MaxEnergy: Int = 99
 
   /** 初ターン開始までの待ち時間 */
-  val BattleStartWait: MilliSec = Duration(3, TimeUnit.SECONDS).toMillis
+  val BattleStartWait: FiniteDuration = Duration(3, TimeUnit.SECONDS)
 
   /** ターンの長さの初期値 */
-  val InitialTurnDuration: MilliSec = Duration(5, TimeUnit.SECONDS).toMillis
+  val InitialTurnDuration: FiniteDuration = Duration(5, TimeUnit.SECONDS)
 
   /** 連続カード使用に必要な待ち時間 */
-  val CardUseWait: MilliSec = Duration(500, TimeUnit.MILLISECONDS).toMillis
+  val CardUseWait: FiniteDuration = Duration(500, TimeUnit.MILLISECONDS)
 }

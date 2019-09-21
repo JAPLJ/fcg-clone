@@ -1,29 +1,32 @@
 package arena
 
 import akka.actor.{Actor, ActorRef, Props}
-import arena.ClientInput.{DestroyMonster, Join, TurnEnd, UseCard}
+import arena.ClientInput.{DestroyMonster, GameStart, Join, TurnEnd, UseCard}
 
 /** ユーザの入力を指定のアリーナ ID に対応する [[BattleManager]] に伝達し、結果を返す Actor */
 class BattleActor(out: ActorRef, arenaId: String) extends Actor {
 
   def manager: BattleManager = ArenaService.battleManager(arenaId)
 
-  private def emitBattleState: Unit =
+  private def emitBattleState(): Unit =
     manager.battleState.foreach(state => out ! state)
 
   override def receive: Receive = {
     case Join(userKey, userName, deck) =>
       manager.join(userKey, userName, deck)
-      emitBattleState
+      emitBattleState()
     case UseCard(userKey, cardIndex) =>
       manager.useCard(userKey, cardIndex)
-      emitBattleState
+      emitBattleState()
     case DestroyMonster(userKey) =>
       manager.destroyMonster(userKey)
-      emitBattleState
+      emitBattleState()
+    case GameStart(userKey) =>
+      manager.gameStart(userKey)
+      emitBattleState()
     case TurnEnd(userKey) =>
       manager.turnEnd(userKey)
-      emitBattleState
+      emitBattleState()
   }
 }
 

@@ -19,6 +19,9 @@ object ClientInput {
   /** 自モンスター破壊時 */
   case class DestroyMonster(userKey: String) extends ClientInput
 
+  /** ゲーム開始時 (システムユーザーのみ) */
+  case class GameStart(userKey: String) extends ClientInput
+
   /** ターン終了時 (システムユーザーのみ) */
   case class TurnEnd(userKey: String) extends ClientInput
 }
