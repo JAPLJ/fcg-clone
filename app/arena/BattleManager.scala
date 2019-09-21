@@ -10,7 +10,7 @@ class BattleManager(arena: Arena,
                     implicit val materializer: Materializer,
                     implicit val system: ActorSystem) {
   private var battleStateOption: Option[BattleState] = None
-  def battleState: BattleState = battleStateOption.get
+  def battleState: Option[BattleState] = battleStateOption
 
   // システムユーザーとしてシステムメッセージを送るためのキュー
   private val systemUserQueue =

@@ -8,19 +8,22 @@ class BattleActor(out: ActorRef, arenaId: String) extends Actor {
 
   def manager: BattleManager = ArenaService.battleManager(arenaId)
 
+  private def emitBattleState: Unit =
+    manager.battleState.foreach(state => out ! state)
+
   override def receive: Receive = {
     case Join(userKey, userName) =>
       manager.join(userKey, userName)
-      out ! manager.battleState
+      emitBattleState
     case UseCard(userKey, cardIndex) =>
       manager.useCard(userKey, cardIndex)
-      out ! manager.battleState
+      emitBattleState
     case DestroyMonster(userKey) =>
       manager.destroyMonster(userKey)
-      out ! manager.battleState
+      emitBattleState
     case TurnEnd(userKey) =>
       manager.turnEnd(userKey)
-      out ! manager.battleState
+      emitBattleState
   }
 }
 
