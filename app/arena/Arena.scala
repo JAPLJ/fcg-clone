@@ -10,7 +10,8 @@ sealed trait ClientInput
 object ClientInput {
 
   /** アリーナ参加時 */
-  case class Join(userKey: String, userName: String) extends ClientInput
+  case class Join(userKey: String, userName: String, deck: IndexedSeq[CardId])
+      extends ClientInput
 
   /** カード使用時 */
   case class UseCard(userKey: String, cardIndex: Int) extends ClientInput

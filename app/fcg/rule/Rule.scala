@@ -1,5 +1,9 @@
 package fcg.rule
 
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent.duration.Duration
+
 object Rule {
 
   /** ゲーム開始時のプレイヤーの体力 */
@@ -22,4 +26,13 @@ object Rule {
 
   /** エネルギーの最大保持数 */
   val MaxEnergy: Int = 99
+
+  /** 初ターン開始までの待ち時間 */
+  val BattleStartWait: MilliSec = Duration(3, TimeUnit.SECONDS).toMillis
+
+  /** ターンの長さの初期値 */
+  val InitialTurnDuration: MilliSec = Duration(5, TimeUnit.SECONDS).toMillis
+
+  /** 連続カード使用に必要な待ち時間 */
+  val CardUseWait: MilliSec = Duration(500, TimeUnit.MILLISECONDS).toMillis
 }

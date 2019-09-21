@@ -12,8 +12,8 @@ class BattleActor(out: ActorRef, arenaId: String) extends Actor {
     manager.battleState.foreach(state => out ! state)
 
   override def receive: Receive = {
-    case Join(userKey, userName) =>
-      manager.join(userKey, userName)
+    case Join(userKey, userName, deck) =>
+      manager.join(userKey, userName, deck)
       emitBattleState
     case UseCard(userKey, cardIndex) =>
       manager.useCard(userKey, cardIndex)
