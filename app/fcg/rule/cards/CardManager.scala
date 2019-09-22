@@ -27,4 +27,20 @@ object CardManager {
 
   /** 呪文カードのリスト */
   def spellCards: Seq[SpellCard] = spellCardsSet.toSeq
+
+  /** デッキコードをパースする */
+  def parseDeck(deckCode: String): IndexedSeq[CardId] = {
+    val codes = deckCode.split('.')
+    require(codes.length % 2 == 0 && codes.forall(_.forall(_.isDigit)))
+
+    val cardTypes = codes.length / 2
+
+    val parsed = for { i <- 0 until cardTypes } yield {
+      val count = codes(2 * i + 0).toInt
+      val card = cardById(codes(2 * i + 1).toInt).get
+      require(1 <= count && count <= card.maxSameCards)
+      (for { _ <- 0 until count } yield card.id).toIndexedSeq
+    }
+    parsed.flatten
+  }
 }

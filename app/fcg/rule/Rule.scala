@@ -35,4 +35,10 @@ object Rule {
 
   /** 連続カード使用に必要な待ち時間 */
   val CardUseWait: FiniteDuration = Duration(500, TimeUnit.MILLISECONDS)
+
+  /** デッキの最小カード枚数 */
+  val MinDeckSize: Int = 25
+
+  /** デッキの最大カード枚数 */
+  val MaxDeckSize: Int = 100
 }

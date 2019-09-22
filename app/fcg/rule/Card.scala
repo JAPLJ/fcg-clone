@@ -1,6 +1,6 @@
 package fcg.rule
 
-import play.api.libs.json.{JsObject, JsValue, Json, Writes}
+import play.api.libs.json.{JsObject, Json}
 
 /** 全てのカードに共通する要素をもつ trait */
 trait Card {
