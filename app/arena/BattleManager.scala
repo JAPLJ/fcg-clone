@@ -53,7 +53,9 @@ class BattleManager(arena: Arena,
       cardUsedInThisTurn.set(0L)
       systemUserQueue.offer(TurnEnd(systemUserKey))
     } else {
-      system.scheduler.scheduleOnce(Rule.CardUseWait, () => checkTurnEnd())
+      system.scheduler.scheduleOnce(Rule.CardUseWait, new Runnable {
+        override def run(): Unit = checkTurnEnd()
+      })
     }
   }
 
@@ -90,9 +92,10 @@ class BattleManager(arena: Arena,
               currentTime - Rule.CardUseWait.toMillis,
             ))
           system.scheduler
-            .scheduleOnce(
-              Rule.BattleStartWait,
-              () => systemUserQueue.offer(GameStart(systemUserKey)): Unit)
+            .scheduleOnce(Rule.BattleStartWait, new Runnable {
+              override def run(): Unit =
+                systemUserQueue.offer(GameStart(systemUserKey))
+            })
         case None =>
           waitingPlayer = Some(Join(userKey, userName, deck))
       }
@@ -107,8 +110,10 @@ class BattleManager(arena: Arena,
                 nextTurnStartTime = System
                   .currentTimeMillis() + Rule.InitialTurnDuration.toMillis)
       })
-      system.scheduler.scheduleOnce(Rule.InitialTurnDuration,
-                                    () => checkTurnEnd())
+      system.scheduler.scheduleOnce(Rule.InitialTurnDuration, new Runnable {
+        override def run(): Unit =
+          checkTurnEnd()
+      })
     }
   }
 
@@ -131,9 +136,9 @@ class BattleManager(arena: Arena,
       if checkCardUseWait(playerSide, currentTime)
       if state.gameState.canCast(playerSide, cardIndex)
     } {
-      val (lastUsed1, lastUsed2): (MilliSec, MilliSec) = playerSide match {
-        case Player1 => (currentTime, lastUsed2)
-        case Player2 => (lastUsed1, currentTime)
+      val (lastUsed1, lastUsed2) = playerSide match {
+        case Player1 => (currentTime, state.player2LastCast)
+        case Player2 => (state.player1LastCast, currentTime)
       }
       updateBattleState(
         st =>
@@ -162,8 +167,10 @@ class BattleManager(arena: Arena,
           gameState = st.gameState.turnEnd(),
           currentTurn = st.currentTurn + 1,
           nextTurnStartTime = currentTime + Rule.InitialTurnDuration.toMillis))
-      system.scheduler.scheduleOnce(Rule.InitialTurnDuration,
-                                    () => checkTurnEnd())
+      system.scheduler.scheduleOnce(Rule.InitialTurnDuration, new Runnable {
+        override def run(): Unit =
+          checkTurnEnd()
+      })
     }
   }
 }
