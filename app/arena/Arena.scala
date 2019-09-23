@@ -46,10 +46,11 @@ case class ClientPlayer(hp: Int,
                         lastSpell: Option[CardId],
                         deckRemain: Int)
 
-/** ユーザから見えるゲームの状態 ([[ClientPlayer]] に加え、自プレイヤーは手札の情報も見える) */
+/** ユーザから見えるゲームの状態 ([[ClientPlayer]] に加え、自プレイヤーの手札とキー情報も見える) */
 case class ClientGameState(player: ClientPlayer,
                            opponent: ClientPlayer,
-                           playerHand: Seq[CardId])
+                           playerHand: Seq[CardId],
+                           playerKey: String)
 
 /** バトルが行われるアリーナ */
 case class Arena(arenaId: String,
