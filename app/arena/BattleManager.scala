@@ -27,6 +27,7 @@ class BattleManager(arena: Arena,
   private def updateBattleState(f: BattleState => BattleState): Unit =
     battleState match {
       case Some(state) => battleStateOption = Some(f(state))
+      case None =>
     }
 
   // システムユーザーとしてシステムメッセージを送るためのキュー

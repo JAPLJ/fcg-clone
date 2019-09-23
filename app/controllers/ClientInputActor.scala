@@ -1,8 +1,9 @@
 package controllers
 
 import akka.actor.{Actor, ActorRef, Props}
-import arena.ClientInput.Join
+import arena.ClientInput.{DestroyMonster, Join, UseCard}
 import fcg.rule.CardId
+import play.api.libs.json.JsValue
 
 class ClientInputActor(out: ActorRef,
                        userKey: String,
@@ -10,7 +11,14 @@ class ClientInputActor(out: ActorRef,
                        deck: IndexedSeq[CardId])
     extends Actor {
 
-  override def receive: Receive = ???
+  import ClientInputConverters._
+
+  override def receive: Receive = {
+    case input: JsValue if input.asOpt[UseCard].isDefined =>
+      out ! input.as[UseCard]
+    case input: JsValue if input.asOpt[DestroyMonster].isDefined =>
+      out ! input.as[DestroyMonster]
+  }
 
   override def preStart(): Unit = out ! Join(userKey, userName, deck)
 }
