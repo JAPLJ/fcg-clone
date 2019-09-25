@@ -209,8 +209,7 @@ case class GameState private (player1: Player,
   private def toPlayer1SideGameState: ClientGameState =
     ClientGameState(player1.toClientPlayer(monster1),
                     player2.toClientPlayer(monster2),
-                    player1.hand.map(_.id),
-                    "")
+                    player1.hand.map(_.id))
 }
 
 object GameState {

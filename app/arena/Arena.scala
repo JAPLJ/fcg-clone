@@ -2,7 +2,7 @@ package arena
 
 import akka.stream.UniqueKillSwitch
 import akka.stream.scaladsl.Flow
-import fcg.rule.{CardId, Color}
+import fcg.rule.CardId
 
 /** ユーザからの入力 */
 sealed trait ClientInput
@@ -25,32 +25,6 @@ object ClientInput {
   /** ターン終了時 (システムユーザーのみ) */
   case class TurnEnd(userKey: String) extends ClientInput
 }
-
-/** ユーザ側から見えるモンスターの状態 */
-case class ClientMonster(hp: Int,
-                         attack: Int,
-                         defense: Int,
-                         regeneration: Int,
-                         frozen: Int,
-                         baseCardId: CardId)
-
-/** ユーザ側から見えるユーザの状態 */
-case class ClientPlayer(hp: Int,
-                        attack: Int,
-                        defense: Int,
-                        regeneration: Int,
-                        name: String,
-                        energies: Map[Color, Int],
-                        generators: Map[Color, Int],
-                        monster: Option[ClientMonster],
-                        lastSpell: Option[CardId],
-                        deckRemain: Int)
-
-/** ユーザから見えるゲームの状態 ([[ClientPlayer]] に加え、自プレイヤーの手札とキー情報も見える) */
-case class ClientGameState(player: ClientPlayer,
-                           opponent: ClientPlayer,
-                           playerHand: Seq[CardId],
-                           playerKey: String)
 
 /** バトルが行われるアリーナ */
 case class Arena(arenaId: String,
