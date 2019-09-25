@@ -8,12 +8,12 @@ import play.api.libs.functional.syntax._
 object ClientInputConverters {
 
   implicit val ReadsUseCard: Reads[UseCard] =
-    (JsPath \ "type").read[String](verifying[String](_ == "use_card")) andKeep
-      ((JsPath \ "user_key").read[String] and
-        (JsPath \ "card_index").read[Int])(UseCard.apply _)
+    (JsPath \ 'type).read[String](verifying[String](_ == "use_card")) andKeep
+      ((JsPath \ 'user_key).read[String] and
+        (JsPath \ 'card_index).read[Int])(UseCard.apply _)
 
   implicit val ReadsDestroyMonster: Reads[DestroyMonster] =
-    (JsPath \ "type")
+    (JsPath \ 'type)
       .read[String](verifying[String](_ == "destroy_monster")) andKeep
-      (JsPath \ "user_key").read[String].map(DestroyMonster.apply)
+      (JsPath \ 'user_key).read[String].map(DestroyMonster.apply)
 }
