@@ -77,4 +77,10 @@ object ArenaService {
 
   private[arena] def battleManager(arenaId: String): BattleManager =
     battleManagerMap(arenaId)
+
+  /** 指定の ID を持つアリーナと対応するバトルマネージャを削除する */
+  def destroyArena(arenaId: String): Unit = {
+    arenaMap.remove(arenaId)
+    battleManagerMap.remove(arenaId)
+  }
 }
