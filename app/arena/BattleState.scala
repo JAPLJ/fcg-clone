@@ -1,6 +1,7 @@
 package arena
 
 import fcg.game.GameState
+import fcg.game.GameState.GameStatus.InGame
 import fcg.game.GameState.PlayerSide
 import fcg.game.GameState.PlayerSide.{Player1, Player2}
 import fcg.rule.{CardId, Color, MilliSec}
@@ -24,6 +25,9 @@ case class BattleState(gameState: GameState,
                         case Player1 => player1Key
                         case Player2 => player2Key
                       })
+
+  /** ゲームが既に終了しているかどうか */
+  def isDone: Boolean = gameState.status != InGame
 }
 
 /** ユーザ側から見えるモンスターの状態 */

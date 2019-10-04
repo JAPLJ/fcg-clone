@@ -1,6 +1,6 @@
 package controllers
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, PoisonPill, Props}
 import arena.BattleState
 import fcg.game.GameState.PlayerSide.{Player1, Player2}
 
@@ -16,6 +16,12 @@ class ClientOutputActor(out: ActorRef, userKey: String) extends Actor {
         None
       }
       sideOption.foreach(side => out ! battleState.toClientBattleState(side))
+
+      // 決着がついたら Actor を終了させる
+      if (battleState.isDone) {
+        out ! PoisonPill
+        self ! PoisonPill
+      }
   }
 }
 
